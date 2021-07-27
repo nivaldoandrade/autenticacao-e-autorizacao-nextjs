@@ -36,9 +36,9 @@ export function signOut() {
 	destroyCookie(null, '@nextauth.token');
 	destroyCookie(null, '@nextauth.refreshToken');
 
-	authChannel.postMessage('signOut');
-
 	Router.push('/');
+
+	authChannel.postMessage('signOut');
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
@@ -46,18 +46,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
 	const isAuthenticated = !!user;
 
 	useEffect(() => {
-		authChannel = new BroadcastChannel('signOut');
+		authChannel = new BroadcastChannel('auth');
 
 		authChannel.onmessage = (message) => {
+			console.log(message.data)
 			switch (message.data) {
 				case 'signOut':
-					signOut();
-					break
+					window.location.href = `${window.location.origin}`
+					break;
 				case 'signIn':
-					Router.push('/dashboard');
-					break
+					window.location.href = `${window.location.origin}/dashboard`
+					break;
 				default:
-					break
+					break;
 			}
 		}
 	}, []);
@@ -101,7 +102,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
 			Router.push('/dashboard');
 
-			// authChannel.postMessage('signIn');
+			authChannel.postMessage('signIn');
 		} catch (error) {
 			console.log(error);
 		}

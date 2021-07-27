@@ -32,7 +32,8 @@ export function APIClient(ctx = null) {
 				if (!isrefreshing) {
 					isrefreshing = true;
 
-					api.post('refresh').then(resolve => {
+					api.post('refresh', { refreshToken }).then(resolve => {
+						console.log('ok');
 						setCookie(ctx, '@nextauth.token', resolve.data.token, {
 							maxAge: 60 * 60 * 24 * 30, // 30 days
 							path: '/',
